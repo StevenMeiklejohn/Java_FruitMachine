@@ -1,6 +1,7 @@
 package example.codeclan.com.fruitmachine2;
 
 import android.graphics.drawable.AnimationDrawable;
+import android.media.Image;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     Random r;
     int img1, img2, img3;
     ArrayList<ImageView> images;
+    ArrayList<AnimationDrawable> drawables;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,27 +46,20 @@ public class MainActivity extends AppCompatActivity {
         images.add(image2);
         images.add(image3);
         images.add(image1Top);
-        images.add(image1Top);
-        images.add(image1Top);
+        images.add(image2Top);
+        images.add(image3Top);
         images.add(image1Bot);
-        images.add(image1Bot);
-        images.add(image1Bot);
+        images.add(image2Bot);
+        images.add(image3Bot);
 
 
         b_roll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 //                clear image views
-                image1.setImageDrawable(null);
-                image2.setImageDrawable(null);
-                image3.setImageDrawable(null);
-                image1Top.setImageDrawable(null);
-                image2Top.setImageDrawable(null);
-                image3Top.setImageDrawable(null);
-                image1Bot.setImageDrawable(null);
-                image2Bot.setImageDrawable(null);
-                image3Bot.setImageDrawable(null);
+                clearImages();
 
+                ArrayList<AnimationDrawable> drawables = new ArrayList<AnimationDrawable>();
 //                animate first image
                 image1Top.setBackgroundResource(R.drawable.anim);
                 final AnimationDrawable image1TopAnim = (AnimationDrawable) image1Top.getBackground();
@@ -77,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
                 image1BotAnim.start();
 
 //                animate second image
+
                 image2Top.setBackgroundResource(R.drawable.anim);
                 final AnimationDrawable image2TopAnim = (AnimationDrawable) image2Top.getBackground();
                 image2TopAnim.start();
@@ -97,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
                 image3Bot.setBackgroundResource(R.drawable.anim);
                 final AnimationDrawable image3BotAnim = (AnimationDrawable) image3Bot.getBackground();
                 image3BotAnim.start();
+
 
 //                stop the animation and apply the images
                 Handler handler = new Handler();
@@ -121,7 +118,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
+    public void clearImages(){
+        for(ImageView image:images){
+            image.setImageDrawable(null);
+        }
+    }
 
     public void setImages(){
 //      Randomize the images.
