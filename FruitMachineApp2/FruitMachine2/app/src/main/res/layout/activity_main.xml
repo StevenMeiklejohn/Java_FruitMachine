@@ -244,6 +244,7 @@
 
     <Button
         android:id="@+id/button1Hold"
+        android:onClick="getHold"
         style="@style/Widget.AppCompat.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -255,6 +256,7 @@
 
     <Button
         android:id="@+id/button2Hold"
+        android:onClick="getHold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hold"
@@ -267,6 +269,7 @@
 
     <Button
         android:id="@+id/button3Hold"
+        android:onClick="getHold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hold"

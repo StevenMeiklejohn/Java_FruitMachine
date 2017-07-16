@@ -3,7 +3,9 @@ package example.codeclan.com.fruitmachine2;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.Image;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,15 +24,19 @@ import static android.R.attr.button;
 import static android.R.id.button1;
 
 
+
 public class MainActivity extends AppCompatActivity {
 
-    Button b_roll, button1Hold, button2Hold, button3Hold, button1Nudge, button2Nudge, button3Nudge, button12;
+    Button b_roll, button1Hold, button2Hold, button3Hold, button1Nudge, button2Nudge, button3Nudge, buttontmp;
     ImageView image1, image2, image3, image1Top, image2Top, image3Top, image1Bot, image2Bot, image3Bot;
     Random r;
-    int img1, img2, img3;
-    ArrayList<ImageView> images;
+    int img1, img2, img3, randomDelay, time;
+    ArrayList<AnimationDrawable> reel1, reel2, reel3;
     ArrayList<Button> buttons;
+    ArrayList<ImageView> images;
     Boolean reel1Active, reel2Active, reel3Active;
+    AnimationDrawable drawableToStop;
+
 
 
     @Override
@@ -56,27 +62,16 @@ public class MainActivity extends AppCompatActivity {
         button2Nudge = (Button) findViewById(R.id.button2Nudge);
         button3Nudge = (Button) findViewById(R.id.button3Nudge);
         buttons = new ArrayList<Button>();
+        images = new ArrayList<ImageView>();
         buttons.add(button1Hold);
         buttons.add(button2Hold);
         buttons.add(button3Hold);
         buttons.add(button1Nudge);
         buttons.add(button2Nudge);
         buttons.add(button3Nudge);
-
-
-
-
-
-        images = new ArrayList<ImageView>();
-        images.add(image1);
-        images.add(image2);
-        images.add(image3);
-        images.add(image1Top);
-        images.add(image2Top);
-        images.add(image3Top);
-        images.add(image1Bot);
-        images.add(image2Bot);
-        images.add(image3Bot);
+        reel1 = new ArrayList<AnimationDrawable>();
+        reel2 = new ArrayList<AnimationDrawable>();
+        reel3 = new ArrayList<AnimationDrawable>();
         reel1Active = true;
         reel2Active = true;
         reel3Active = true;
@@ -85,65 +80,138 @@ public class MainActivity extends AppCompatActivity {
         b_roll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                clear image views
                 clearImages();
-
-                image1Top.setBackgroundResource(R.drawable.anim);
-                final AnimationDrawable image1TopAnim = (AnimationDrawable) image1Top.getBackground();
-                image1TopAnim.start();
-                image1.setBackgroundResource(R.drawable.anim);
-                final AnimationDrawable image1anim = (AnimationDrawable) image1.getBackground();
-                image1anim.start();
-                image1Bot.setBackgroundResource(R.drawable.anim);
-                final AnimationDrawable image1BotAnim = (AnimationDrawable) image1Bot.getBackground();
-                image1BotAnim.start();
-
-//                animate second image
-
-                image2Top.setBackgroundResource(R.drawable.anim);
-                final AnimationDrawable image2TopAnim = (AnimationDrawable) image2Top.getBackground();
-                image2TopAnim.start();
-                image2.setBackgroundResource(R.drawable.anim);
-                final AnimationDrawable image2anim = (AnimationDrawable) image2.getBackground();
-                image2anim.start();
-                image2Bot.setBackgroundResource(R.drawable.anim);
-                final AnimationDrawable image2BotAnim = (AnimationDrawable) image2Bot.getBackground();
-                image2BotAnim.start();
-
-//                animate third image
-                image3Top.setBackgroundResource(R.drawable.anim);
-                final AnimationDrawable image3TopAnim = (AnimationDrawable) image3Top.getBackground();
-                image3TopAnim.start();
-                image3.setBackgroundResource(R.drawable.anim);
-                final AnimationDrawable image3anim = (AnimationDrawable) image3.getBackground();
-                image3anim.start();
-                image3Bot.setBackgroundResource(R.drawable.anim);
-                final AnimationDrawable image3BotAnim = (AnimationDrawable) image3Bot.getBackground();
-                image3BotAnim.start();
-
-
-//                stop the animation and apply the images
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        image1TopAnim.stop();
-                        image2TopAnim.stop();
-                        image3TopAnim.stop();
-                        image1anim.stop();
-                        image2anim.stop();
-                        image3anim.stop();
-                        image1BotAnim.stop();
-                        image2BotAnim.stop();
-                        image3BotAnim.stop();
-                        setImages();
-                        getScore();
-
-                    }
-                }, 500);
+                reel1Go();
+                reel2Go();
+                reel3Go();
+//                getScore();
+//                resetReelActives();
             }
         });
+//        getScore();
     }
+
+    public void reel1Go() {
+        int time = generateRandomDelay();
+        new CountDownTimer(time, 1000) {
+            public void onTick(long millisUntilFinished) {
+                spinReel1();
+            }
+            public void onFinish() {
+                setImagesReel1();
+            }
+        }.start();
+    }
+
+    public void reel2Go() {
+        int time = generateRandomDelay();
+        new CountDownTimer(time, 1000) {
+            public void onTick(long millisUntilFinished) {
+                spinReel2();
+            }
+            public void onFinish() {
+                setImagesReel2();
+            }
+        }.start();
+    }
+
+    public void reel3Go() {
+        int time = generateRandomDelay();
+        new CountDownTimer(time, 1000) {
+            public void onTick(long millisUntilFinished) {
+                spinReel3();
+            }
+            public void onFinish() {
+                setImagesReel3();
+                getScore();
+            }
+        }.start();
+
+    }
+
+
+    public void spinReel1() {
+
+        if (reel1Active) {
+//            clearImages();
+            final ArrayList<AnimationDrawable> reel1 = new ArrayList<AnimationDrawable>();
+            image1Top.setBackgroundResource(R.drawable.anim);
+            final AnimationDrawable image1TopAnim = (AnimationDrawable) image1Top.getBackground();
+            reel1.add(image1TopAnim);
+            images.add(image1Top);
+            image1TopAnim.start();
+
+
+            image1.setBackgroundResource(R.drawable.anim);
+            final AnimationDrawable image1anim = (AnimationDrawable) image1.getBackground();
+            reel1.add(image1anim);
+            images.add(image1);
+            image1anim.start();
+
+
+            image1Bot.setBackgroundResource(R.drawable.anim);
+            final AnimationDrawable image1BotAnim = (AnimationDrawable) image1Bot.getBackground();
+            reel1.add(image1BotAnim);
+            images.add(image1Bot);
+            image1BotAnim.start();
+        }
+    }
+
+    public void spinReel2() {
+//                animate second image
+        if (reel2Active) {
+            final ArrayList<AnimationDrawable> reel2 = new ArrayList<AnimationDrawable>();
+            image2Top.setBackgroundResource(R.drawable.anim);
+            final AnimationDrawable image2TopAnim = (AnimationDrawable) image2Top.getBackground();
+            reel2.add(image2TopAnim);
+            images.add(image2Top);
+            image2TopAnim.start();
+
+            image2.setBackgroundResource(R.drawable.anim);
+            final AnimationDrawable image2anim = (AnimationDrawable) image2.getBackground();
+            reel2.add(image2anim);
+            images.add(image2);
+            image2anim.start();
+
+            image2Bot.setBackgroundResource(R.drawable.anim);
+            final AnimationDrawable image2BotAnim = (AnimationDrawable) image2Bot.getBackground();
+            reel2.add(image2BotAnim);
+            images.add(image2Bot);
+            image2BotAnim.start();
+        }
+    }
+
+    public void spinReel3(){
+//                animate third image
+        if(reel3Active) {
+//            clearImages();
+            final ArrayList<AnimationDrawable> reel3 = new ArrayList<AnimationDrawable>();
+            image3Top.setBackgroundResource(R.drawable.anim);
+            final AnimationDrawable image3TopAnim = (AnimationDrawable) image3Top.getBackground();
+            reel3.add(image3TopAnim);
+            images.add(image3Top);
+            image3TopAnim.start();
+
+
+
+            image3.setBackgroundResource(R.drawable.anim);
+            final AnimationDrawable image3anim = (AnimationDrawable) image3.getBackground();
+//            drawables.add(image1anim);
+            reel3.add(image3anim);
+            images.add(image3);
+            image3anim.start();
+
+
+
+            image3Bot.setBackgroundResource(R.drawable.anim);
+            final AnimationDrawable image3BotAnim = (AnimationDrawable) image3Bot.getBackground();
+//            drawables.add(image1BotAnim);
+            reel3.add(image3BotAnim);
+            images.add(image3Bot);
+            image3BotAnim.start();
+        }
+    }
+
 
     public void clearImages(){
         for(ImageView image:images){
@@ -151,12 +219,21 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void setImages() {
+    public void resetReelActives(){
+        reel1Active = true;
+        reel2Active = true;
+        reel3Active = true;
+    }
+
+    public int generateRandomDelay(){
+        randomDelay = r.nextInt(4000) + 1000;
+        return randomDelay;
+    }
+
+    public void setImagesReel1() {
 //      Randomize the images.
         img1 = r.nextInt(5) + 1;
-        img2 = r.nextInt(5) + 1;
-        img3 = r.nextInt(5) + 1;
-
+//        deHighLightHoldNudge();
 //        Set first image
         if (reel1Active) {
             switch (img1) {
@@ -192,7 +269,11 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
         }
+    }
 
+    public void setImagesReel2() {
+        img2 = r.nextInt(5) + 1;
+//        deHighLightHoldNudge();
         //        Set second image
         if (reel2Active) {
             switch (img2) {
@@ -228,8 +309,11 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
         }
+    }
 
-
+    public void setImagesReel3(){
+        img3 = r.nextInt(5) + 1;
+//        deHighLightHoldNudge();
         //        Set third image
         if (reel3Active){
             switch (img3) {
@@ -265,24 +349,23 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
     }
-
     }
 
     public void getScore(){
+        if(img1 >=1 && img2 >= 1 && img3 >= 1) {
 //        three of the same images;
-        if(img1 == img2 && img2 == img3){
-            Toast.makeText(this, "Jackpot!! Congratulations!!", Toast.LENGTH_LONG).show();
-
-        }
-//        three of the same images;
-        if(img1 == img2 || img2 == img3 || img1 == img3){
-            highLightHoldNudge();
-            Toast.makeText(this, "Consolation Prize!! Congrats!!", Toast.LENGTH_LONG).show();
+            if (img1 == img2 && img2 == img3) {
+                Toast.makeText(this, "Jackpot!! Congratulations!!", Toast.LENGTH_LONG).show();
+            }
+//        two of the same images;
+            if (img1 == img2 || img2 == img3 || img1 == img3) {
+                highLightHoldNudge();
+                Toast.makeText(this, "Consolation Prize!! Congrats!!", Toast.LENGTH_LONG).show();
+            }
         }
     }
 
     public void highLightHoldNudge(){
-
         for(Button btn: buttons) {
 //            btn = (Button) findViewById(R.id.button1Hold);
             Animation mAnimation = new AlphaAnimation(1, 0);
@@ -291,27 +374,32 @@ public class MainActivity extends AppCompatActivity {
             mAnimation.setRepeatCount(Animation.INFINITE);
             mAnimation.setRepeatMode(Animation.REVERSE);
             btn.startAnimation(mAnimation);
-            btn.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    deHighLightHoldNudge();
-//                    v.clearAnimation();
-                }
-            });
         }
     }
 
     public void deHighLightHoldNudge() {
-
         for (Button btn : buttons) {
-
-            btn.clearAnimation();
-
-
+             btn.clearAnimation();
         }
     }
 
+    public void getHold(View view){
+        buttontmp = (Button)findViewById(view.getId());
+        switch (view.getId()) {
+            case R.id.button1Hold:
+                reel1Active = false;
+//                buttontmp.clearAnimation();
+                break;
+            case R.id.button2Hold:
+                reel2Active = false;
+//                buttontmp.clearAnimation();
+                break;
+            case R.id.button3Hold:
+                reel3Active = false;
+//                buttontmp.clearAnimation();
+                break;
+        }
+    }
 
 
     }
